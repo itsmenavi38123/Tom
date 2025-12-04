@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookDash Dataset Generator</title>
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-book"></i>
+                <h1>BookDash Dataset Generator</h1>
+            </div>
+            <p class="subtitle">Create customized bookkeeping datasets for QuickBooks Online</p>
+        </div>
+
+        <form id="datasetForm" class="dataset-form">
+            <div class="form-sections">
+                <div class="form-section">
+                    <h2><i class="fas fa-user"></i> Client & Timeframe</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="client_name">Client Name *</label>
+                            <input type="text" id="client_name" name="client_name" value="Test Client" required
+                                maxlength="80">
+                        </div>
+                        <div class="form-group">
+                            <label for="industry">Industry</label>
+                            <select id="industry" name="industry">
+                                <option value="wellness">Wellness</option>
+                                <option value="retail">Retail</option>
+                                <option value="ecommerce">E-commerce</option>
+                                <option value="restaurant">Restaurant</option>
+                                <option value="services">Services</option>
+                                <option value="nonprofit">Non-Profit</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="region">Region</label>
+                            <select id="region" name="region">
+                                <option value="mixed" selected>Mixed (National)</option>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <option value="AR">Arkansas</option>
+                                <option value="CA">California</option>
+                                <option value="CO">Colorado</option>
+                                <option value="CT">Connecticut</option>
+                                <option value="DE">Delaware</option>
+                                <option value="DC">District of Columbia</option>
+                                <option value="FL">Florida</option>
+                                <option value="GA">Georgia</option>
+                                <option value="HI">Hawaii</option>
+                                <option value="ID">Idaho</option>
+                                <option value="IL">Illinois</option>
+                                <option value="IN">Indiana</option>
+                                <option value="IA">Iowa</option>
+                                <option value="KS">Kansas</option>
+                                <option value="KY">Kentucky</option>
+                                <option value="LA">Louisiana</option>
+                                <option value="ME">Maine</option>
+                                <option value="MD">Maryland</option>
+                                <option value="MA">Massachusetts</option>
+                                <option value="MI">Michigan</option>
+                                <option value="MN">Minnesota</option>
+                                <option value="MS">Mississippi</option>
+                                <option value="MO">Missouri</option>
+                                <option value="MT">Montana</option>
+                                <option value="NE">Nebraska</option>
+                                <option value="NV">Nevada</option>
+                                <option value="NH">New Hampshire</option>
+                                <option value="NJ">New Jersey</option>
+                                <option value="NM">New Mexico</option>
+                                <option value="NY">New York</option>
+                                <option value="NC">North Carolina</option>
+                                <option value="ND">North Dakota</option>
+                                <option value="OH">Ohio</option>
+                                <option value="OK">Oklahoma</option>
+                                <option value="OR">Oregon</option>
+                                <option value="PA">Pennsylvania</option>
+                                <option value="RI">Rhode Island</option>
+                                <option value="SC">South Carolina</option>
+                                <option value="SD">South Dakota</option>
+                                <option value="TN">Tennessee</option>
+                                <option value="TX">Texas</option>
+                                <option value="UT">Utah</option>
+                                <option value="VT">Vermont</option>
+                                <option value="VA">Virginia</option>
+                                <option value="WA">Washington</option>
+                                <option value="WV">West Virginia</option>
+                                <option value="WI">Wisconsin</option>
+                                <option value="WY">Wyoming</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="business_scale">Business Scale</label>
+                            <select id="business_scale" name="business_scale">
+                                <option value="light">Light (small)</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="heavy">Heavy (large)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="messiness">Messiness</label>
+                            <select id="messiness" name="messiness">
+                                <option value="none">None</option>
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="start_date">Start Date *</label>
+                            <input type="date" id="start_date" name="start_date" value="2024-01-01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="months">Number of Months (1-12)</label>
+                            <input type="number" id="months" name="months" value="3" min="1" max="12" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Configuration -->
+                <div class="form-section">
+                    <h2><i class="fas fa-piggy-bank"></i> Account Configuration</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="num_checking_accounts">Checking Accounts</label>
+                            <input type="number" id="num_checking_accounts" name="num_checking_accounts" value="1"
+                                min="1" max="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="num_credit_cards">Credit Cards</label>
+                            <input type="number" id="num_credit_cards" name="num_credit_cards" value="1" min="0"
+                                max="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="num_savings_accounts">Savings Accounts</label>
+                            <input type="number" id="num_savings_accounts" name="num_savings_accounts" value="0" min="0"
+                                max="3">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="checkbox-label" style="margin-top: 32px;">
+                                <input type="checkbox" name="use_account_numbers" id="use_account_numbers" checked>
+                                Include Account Numbers
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction Volumes -->
+                <div class="form-section">
+                    <h2><i class="fas fa-chart-line"></i> Transaction Volumes</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bank_txn_per_month">Bank Transactions/Month</label>
+                            <input type="number" id="bank_txn_per_month" name="bank_txn_per_month" value="100" min="20"
+                                max="500">
+                            <span class="range-info">20-500 transactions</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="cc_txn_per_month">Credit Card Transactions/Month</label>
+                            <input type="number" id="cc_txn_per_month" name="cc_txn_per_month" value="80" min="20"
+                                max="500">
+                            <span class="range-info">20-500 transactions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Entities -->
+                <div class="form-section">
+                    <h2><i class="fas fa-users"></i> Business Entities</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="num_customers">Number of Customers</label>
+                            <input type="number" id="num_customers" name="num_customers" value="15" min="5" max="50">
+                        </div>
+                        <div class="form-group">
+                            <label for="num_vendors">Number of Vendors</label>
+                            <input type="number" id="num_vendors" name="num_vendors" value="12" min="5" max="50">
+                        </div>
+                        <div class="form-group">
+                            <label for="num_products">Number of Products/Services</label>
+                            <input type="number" id="num_products" name="num_products" value="8" min="1" max="100">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Invoices & Sales -->
+                <div class="form-section">
+                    <h2><i class="fas fa-file-invoice"></i> Invoices & Sales</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="num_invoices">Number of Invoices</label>
+                            <input type="number" id="num_invoices" name="num_invoices" value="25" min="0" max="500">
+                        </div>
+                        <div class="form-group">
+                            <label for="invoice_pct_paid">Invoices Paid (%)</label>
+                            <input type="number" id="invoice_pct_paid" name="invoice_pct_paid" value="80" min="0"
+                                max="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="invoice_due_days">Invoice Due Days</label>
+                            <input type="number" id="invoice_due_days" name="invoice_due_days" value="30" min="7"
+                                max="45">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output Selection -->
+                <div class="form-section">
+                    <h2><i class="fas fa-download"></i> Output Files</h2>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="output_files" value="customers" checked> Customers
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="output_files" value="vendors" checked> Vendors
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="output_files" value="products" checked> Products & Services
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="output_files" value="chart_of_accounts" checked> Chart of
+                            Accounts
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="output_files" value="invoices" checked> Invoices
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="output_files" value="bills"> Bills
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="output_files" value="checks"> Checks
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="output_files" value="bank" checked> Bank Transactions
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="output_files" value="creditcard" checked> Credit Card
+                            Transactions
+                        </label>
+                    </div>
+                    <div class="helper-text" style="margin-top: 8px; font-size: 0.9em; color: #555;">
+                        Phase 1 excludes Bills and Checks. Recommended import order:
+                        Chart of Accounts → Products & Services → Customers → Vendors → Invoices → Credit Card Transactions → Bank Transactions.
+                        Bills and checks aren't importable at phase 1.
+                    </div>
+                </div>
+
+                <!-- Advanced Options -->
+                <div class="form-section">
+                    <h2><i class="fas fa-cogs"></i> Advanced Options</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="curveball_duplicate_deposits">Duplicate Deposits (0-5)</label>
+                            <input type="number" id="curveball_duplicate_deposits" name="curveball_duplicate_deposits"
+                                value="1" min="0" max="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="curveball_questionable_expense_pct">Questionable Expenses (%)</label>
+                            <input type="number" id="curveball_questionable_expense_pct"
+                                name="curveball_questionable_expense_pct" value="5" min="0" max="30">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="curveball_vendor_customer_conflict" checked>
+                                Vendor/Customer Conflicts
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="include_savings_account"> Include Savings Account
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Controls -->
+                <div class="form-section">
+                    <h2><i class="fas fa-triangle-exclamation"></i> Error Controls</h2>
+                    <p class="helper-text" style="margin-bottom: 12px;">
+                        Set the exact number of intentional issues to inject into each dataset. Leave as 0 to keep that
+                        dataset clean. These values override the general messiness slider for the selected files.
+                    </p>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="error_chart_of_accounts">Chart of Accounts Errors</label>
+                            <input type="number" id="error_chart_of_accounts" name="error_chart_of_accounts" value="1"
+                                min="0" max="10">
+                            <span class="range-info">Invalid detail types</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="error_products">Product Errors</label>
+                            <input type="number" id="error_products" name="error_products" value="2" min="0" max="20">
+                            <span class="range-info">Missing descriptions or price tweaks</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="error_customers">Customer Errors</label>
+                            <input type="number" id="error_customers" name="error_customers" value="2" min="0" max="20">
+                            <span class="range-info">Missing emails or name variants</span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="error_vendors">Vendor Errors</label>
+                            <input type="number" id="error_vendors" name="error_vendors" value="2" min="0" max="20">
+                            <span class="range-info">Contact info issues</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="error_invoices">Invoice Errors</label>
+                            <input type="number" id="error_invoices" name="error_invoices" value="3" min="0" max="50">
+                            <span class="range-info">Amount tweaks or customer variants</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="invoice_new_customers">Invoices with New Customers</label>
+                            <input type="number" id="invoice_new_customers" name="invoice_new_customers" value="2"
+                                min="0" max="50">
+                            <span class="range-info">Not found in customer list</span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="error_bank">Bank Transaction Errors</label>
+                            <input type="number" id="error_bank" name="error_bank" value="4" min="0" max="100">
+                            <span class="range-info">Amount or description anomalies</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="error_creditcard">Credit Card Errors</label>
+                            <input type="number" id="error_creditcard" name="error_creditcard" value="3" min="0"
+                                max="100">
+                            <span class="range-info">Amount or description anomalies</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <button type="submit" class="generate-btn" id="generateBtn">
+                <i class="fas fa-magic"></i>
+                Generate Dataset
+                <span class="btn-loading" id="btnLoading" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </span>
+            </button>
+        </form>
+
+        <!-- Preview Section -->
+        <div class="preview-section">
+            <h3><i class="fas fa-eye"></i> Dataset Preview</h3>
+            <div class="preview-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalTransactions">0</div>
+                    <div class="stat-label">Total Transactions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalEntities">0</div>
+                    <div class="stat-label">Customers & Vendors</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="timePeriod">3 months</div>
+                    <div class="stat-label">Time Period</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <h3>Generating Your Dataset</h3>
+            <p>This may take a moment...</p>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='/script.js') }}"></script>
+</body>
+
+</html>
