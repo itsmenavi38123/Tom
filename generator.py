@@ -5,7 +5,7 @@ import shutil
 import pandas as pd
 from datetime import datetime, timedelta
 from zipfile import ZipFile
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 import logging
 from calendar import monthrange
 from collections import defaultdict
@@ -576,6 +576,12 @@ class DatasetGenerator:
                 'date': payment_date,
                 'amount': round(month_total, 2),
                 'label': label
+            })
+        for payment in payments:
+            card_rows.append({
+                'Date': payment['date'].strftime('%m/%d/%Y'),
+                'Description': f"Payment Received - {payment['label']}",
+                'Amount': round(payment['amount'], 2)
             })
         card_rows.sort(key=lambda x: datetime.strptime(x['Date'], '%m/%d/%Y'))
         cc_df = pd.DataFrame(card_rows)
@@ -1644,6 +1650,9 @@ class DatasetGenerator:
         start_balance = round(random.uniform(*profile['starting_balance_range']), 2)
         min_balance = profile['min_balance']
         max_balance = profile['max_balance']
+        vendor_names: List[str] = []
+        if isinstance(self.generated_vendors, pd.DataFrame) and not self.generated_vendors.empty:
+            vendor_names = self.generated_vendors['Display Name'].tolist()
         # Sales deposits and invoice payments
         for deposit in self.sales_deposits:
             entries.append({
@@ -1716,6 +1725,40 @@ class DatasetGenerator:
         augmented: List[Dict] = []
         running_balance = start_balance
         midpoint = (min_balance + max_balance) / 2
+        owner_draw_dates: List[datetime] = []
+        draws_per_week: Dict[Tuple[int, int], int] = defaultdict(int)
+        draws_per_month: Dict[Tuple[int, int], int] = defaultdict(int)
+
+        def can_schedule_draw(draw_dt: datetime) -> bool:
+            week_key = draw_dt.isocalendar()[:2]
+            month_key = (draw_dt.year, draw_dt.month)
+            if draws_per_week[week_key] >= 1:
+                return False
+            if draws_per_month[month_key] >= 3:
+                return False
+            if owner_draw_dates:
+                last_draw = owner_draw_dates[-1]
+                if (draw_dt - last_draw).days < 6:
+                    return False
+            return True
+
+        def record_draw(draw_dt: datetime):
+            owner_draw_dates.append(draw_dt)
+            week_key = draw_dt.isocalendar()[:2]
+            month_key = (draw_dt.year, draw_dt.month)
+            draws_per_week[week_key] += 1
+            draws_per_month[month_key] += 1
+
+        def create_balance_sink(draw_dt: datetime, amount: float) -> Dict:
+            vendor = random.choice(vendor_names or self.industry_profile.get('vendors') or self.extra_vendor_names or ['Capital Expense'])
+            sink_types = ['Equipment Purchase', 'Special Order', 'Emergency Repair', 'Inventory Buy']
+            desc = f"{vendor} {random.choice(sink_types)}"
+            return {
+                'date': draw_dt,
+                'description': desc,
+                'amount': -abs(amount)
+            }
+
         for entry in entries:
             running_balance += entry['amount']
             # Owner contribution if balance too low
@@ -1734,12 +1777,18 @@ class DatasetGenerator:
                 draw_amount = round(min(running_balance - max_balance * 0.9, random.uniform(1500, 4500)), 2)
                 if draw_amount > 0:
                     draw_date = max(entry['date'] - timedelta(days=1), self.start_date)
-                    augmented.append({
-                        'date': draw_date,
-                        'description': 'Owner Draw',
-                        'amount': -draw_amount
-                    })
-                    running_balance -= draw_amount
+                    if can_schedule_draw(draw_date):
+                        augmented.append({
+                            'date': draw_date,
+                            'description': 'Owner Draw',
+                            'amount': -draw_amount
+                        })
+                        record_draw(draw_date)
+                        running_balance -= draw_amount
+                    else:
+                        sink_entry = create_balance_sink(draw_date, draw_amount)
+                        augmented.append(sink_entry)
+                        running_balance += sink_entry['amount']
             augmented.append(entry)
         augmented.sort(key=lambda x: x['date'])
         rows = [{
